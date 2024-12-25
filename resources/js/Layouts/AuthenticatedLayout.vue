@@ -2,7 +2,16 @@
 
 import {ref} from "vue";
 
-const openDropdown = ref(false);
+const openDropdown = ref(0);
+const openSubDropdown = ref(0);
+
+// Toggle dropdown visibility
+const toggleDropdown = (index) => {
+    openDropdown.value = openDropdown.value === index ? 0 : index;
+};
+const toggleSubDropdown = (index) => {
+    openSubDropdown.value = openSubDropdown.value === index ? 0 : index;
+};
 const menus = ref([
     // Dashboard
     {icon: '', label: 'Dashboard', route: 'dashboard'},
@@ -55,6 +64,7 @@ const menus = ref([
           ]},
       ]},
 ]);
+
 </script>
 
 <template>
@@ -216,49 +226,58 @@ const menus = ref([
 
               <li v-for="(menu, index) in menus" :key="index">
                 <div v-if="'children' in menu">
-                  <button type="button" class="w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200" aria-expanded="true">
+                  <button @click="toggleDropdown(index)" type="button" class="w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200" aria-expanded="true">
                     <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    {{ menu.label }}
+                    {{ menu.label +'-'+index+'-'+openDropdown}}
 
-                    <svg v-if="'children' in menu" class="hs-accordion-active:block ms-auto hidden size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                      <svg :class="{'hidden' : openDropdown === index}" class="ms-auto size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
 
-                    <svg v-if="'children' in menu" class="hs-accordion-active:hidden ms-auto block size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg :class="{'hidden' : openDropdown !== index}" class=" ms-auto size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
                   </button>
 
                   <div
-                      class="w-full overflow-hidden transition-[height] duration-300 hidden"
-                      role="region"
-                      aria-labelledby="users-accordion"
+                      :class="{'hidden' : openDropdown !== index}"
+                      class="w-full overflow-hidden transition-[height] duration-300"
                   >
                     <ul class="hs-accordion-group ps-8 pt-1 space-y-1">
-                      <li class="hs-accordion" id="users-accordion-sub-1">
-                        <button type="button" class="hs-accordion-toggle w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200" aria-expanded="true" aria-controls="users-accordion-sub-1-child">
-                          Sub Menu 1
+                      <li v-for="(dropdown, dropIndex) in menu.children" :key="dropIndex">
+                          <div v-if="'children' in dropdown">
+                              <button @click="toggleSubDropdown(dropIndex)" type="button" class="w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200">
+                                  {{ dropdown.label }}
+                                  {{console.log(dropdown)}}
+                                  <svg :class="{'hidden' : openSubDropdown === index}" class="ms-auto hidden size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
 
-                          <svg class="hs-accordion-active:block ms-auto hidden size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                  <svg :class="{'hidden' : openSubDropdown !== index}" class="ms-auto size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                              </button>
 
-                          <svg class="hs-accordion-active:hidden ms-auto block size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                        </button>
+                              <div
+                                  :class="{'hidden' : openSubDropdown !== index}"
+                                  class="w-full overflow-hidden transition-[height] duration-300"
+                              >
+                                  <ul class="pt-1 space-y-1">
+                                      <li>
+                                          <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-200" href="#">
+                                              Link 1
+                                          </a>
+                                      </li>
+                                      <li>
+                                          <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-200" href="#">
+                                              Link 2
+                                          </a>
+                                      </li>
+                                      <li>
+                                          <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-200" href="#">
+                                              Link 3
+                                          </a>
+                                      </li>
+                                  </ul>
+                              </div>
+                          </div>
 
-                        <div id="users-accordion-sub-1-child" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden" role="region" aria-labelledby="users-accordion-sub-1">
-                          <ul class="pt-1 space-y-1">
-                            <li>
-                              <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-200" href="#">
-                                Link 1
-                              </a>
-                            </li>
-                            <li>
-                              <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-200" href="#">
-                                Link 2
-                              </a>
-                            </li>
-                            <li>
-                              <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-200" href="#">
-                                Link 3
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
+                          <Link v-else class="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-neutral-700 dark:text-white" :href="route(dropdown.route)">
+                              <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                              {{ dropdown.label }}
+                          </Link>
                       </li>
                     </ul>
                   </div>
