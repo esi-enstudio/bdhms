@@ -1,7 +1,19 @@
+<script setup>
+defineProps({
+    disable: Boolean,
+})
+</script>
+
 <template>
     <button
-        class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white dark:focus:ring-offset-gray-800 dark:active:bg-gray-300"
+        type="submit"
+        :class="disable ? 'cursor-not-allowed opacity-50' : ''"
+        class="text-white bg-green-600 hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-400 dark:focus:ring-green-600" :disabled="disable"
     >
-        <slot />
+        <slot/>
     </button>
 </template>
+
+<style scoped lang="scss">
+
+</style>

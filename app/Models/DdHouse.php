@@ -29,6 +29,7 @@ class DdHouse extends Model
     protected array $searchable = [
         'name',
         'code',
+        'email',
     ];
 
     /**

@@ -7,6 +7,7 @@ use App\Models\DdHouse;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
@@ -17,16 +18,37 @@ class DdHouseController extends Controller
      */
     public function index(Request $request): Response|ResponseFactory
     {
-        $q = DdHouse::query();
-        return inertia('DdHouse/Index', [
-            'ddHouses' => DdHouseResource::collection($q->search($request->search)
-                ->latest()
-                ->paginate(5)
-                ->withQueryString()),
+        $query = DdHouse::query();
 
+        $houses = $query->search($request->search)
+            ->latest()
+            ->paginate(5)
+            ->through( fn($house) => [
+                'id' => $house->id,
+                'name' => $house->name,
+                'code' => $house->code,
+                'email' => $house->email,
+                'status' => $house->status,
+                'created' => Carbon::parse($house->created_at)->toFormattedDayDateString(),
+                'lastUpdate' => Carbon::parse($house->updated_at)->diffForHumans(),
+                'updated' => Carbon::parse($house->updated_at)->toFormattedDayDateString(),
+            ])
+            ->withQueryString();
+
+        return Inertia::render('DdHouse/Index', [
+            'houses' => $houses,
             'searchTerm' => $request->search,
             'status' => session('msg'),
         ]);
+//        return inertia('DdHouse/Index', [
+//            'ddHouses' => DdHouseResource::collection($q->search($request->search)
+//                ->latest()
+//                ->paginate(5)
+//                ->withQueryString()),
+//
+//            'searchTerm' => $request->search,
+//            'status' => session('msg'),
+//        ]);
     }
 
     /**

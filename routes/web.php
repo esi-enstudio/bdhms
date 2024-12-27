@@ -33,7 +33,7 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::resources([
         'user'          => UserController::class,
-        'ddHouse'       => DdHouseController::class,
+        'house'         => DdHouseController::class,
         'rso'           => RsoController::class,
         'retailer'      => RetailerController::class,
         'itopReplace'   => ItopReplaceController::class,
