@@ -3,7 +3,6 @@ import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
@@ -39,34 +38,23 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
-
                 <TextInput
-                    id="email"
+                    mode="normal"
+                    label="email address"
                     type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
+                    :message="form.errors.email"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
                 <TextInput
-                    id="password"
+                    mode="normal"
+                    label="password"
                     type="password"
-                    class="mt-1 block w-full"
                     v-model="form.password"
-                    required
-                    autocomplete="current-password"
+                    :message="form.errors.password"
                 />
-
-                <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4 block">
@@ -87,13 +75,9 @@ const submit = () => {
                     Forgot your password?
                 </Link>
 
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
+                <button :disabled="form.processing" :class="{ 'opacity-25': form.processing }" type="submit" class="ms-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:hover:text-white dark:focus:bg-white/20 dark:focus:text-white">
                     Log in
-                </PrimaryButton>
+                </button>
             </div>
         </form>
     </GuestLayout>

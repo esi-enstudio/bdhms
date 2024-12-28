@@ -43,8 +43,6 @@ if (props.status)
     <Head title="DD House" />
 
     <AuthenticatedLayout>
-
-
         <!-- Table Section -->
         <div class="py-2 sm:px-5 lg:px-5 lg:py-5 mx-auto">
             <!-- Card -->
@@ -55,9 +53,19 @@ if (props.status)
                             <!-- Header -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-neutral-700">
                                 <div>
-                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                                        Houses
-                                    </h2>
+
+                                    <div class="flex flex-col sm:flex-row gap-3">
+                                        <h2 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
+                                            Houses
+                                        </h2>
+
+                                        <div class="border-t sm:border-t-0 sm:border-s border-gray-200 dark:border-neutral-700"></div>
+
+                                        <Link :href="route('house.create')" class="inline-flex items-center gap-x-2 font-semibold rounded-lg text-blue-600 hover:text-blue-800 focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400">
+                                            Add New
+                                        </Link>
+                                    </div>
+
                                     <p class="text-sm text-gray-600 dark:text-neutral-400">
                                         Add houses, edit and more.
                                     </p>
@@ -75,13 +83,6 @@ if (props.status)
                                         </div>
                                     </div>
                                     <!-- End Search -->
-
-                                    <div class="inline-flex gap-x-2">
-                                        <Link class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" :href="route('house.create')">
-                                            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                                            Add house
-                                        </Link>
-                                    </div>
                                 </div>
                             </div>
                             <!-- End Header -->
