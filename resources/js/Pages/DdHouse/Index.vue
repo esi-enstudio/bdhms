@@ -4,11 +4,7 @@ import {router} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Pagination from "@/Components/Pagination.vue";
 import {debounce} from "lodash";
-import {computed, ref, watch} from "vue";
-import TextInput from "@/Components/TextInput.vue";
-// import SessionMessage from "@/Components/SessionMessage.vue";
-import PaginationWithoutLinks from "@/Components/PaginationWithoutLinks.vue";
-
+import {ref, watch} from "vue";
 
 const props = defineProps({
     houses: Object,
@@ -16,28 +12,39 @@ const props = defineProps({
     status: String,
 })
 const search = ref(props.searchTerm)
-console.log(props.houses)
 
 watch(search, debounce(
-    (query) => router.get(route('ddHouse.index'), { search: query }, { preserveState:true }),
+    (query) => router.get(route('house.index'), { search: query }, { preserveState:true }),
     500
 ))
 
 const delHouse = (id, name) => {
 
-    if (confirm(`Are you sure to delete "${name}" house?`))
+    if (confirm(`Are you sure to delete "${name}"`))
     {
-        router.delete(route('ddHouse.destroy', id));
+        router.delete(route('house.destroy', id));
     }
+}
+
+if (props.status)
+{
+    Toastify({
+        text: props.status,
+        duration: 5000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        // backgroundColor: "green",
+    }).showToast();
 }
 </script>
 
 <template>
     <Head title="DD House" />
 
-<!--    <SessionMessage :status="status"/>-->
-
     <AuthenticatedLayout>
+
+
         <!-- Table Section -->
         <div class="py-2 sm:px-5 lg:px-5 lg:py-5 mx-auto">
             <!-- Card -->
@@ -72,7 +79,7 @@ const delHouse = (id, name) => {
                                     <div class="inline-flex gap-x-2">
                                         <Link class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" :href="route('house.create')">
                                             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                                            Add user
+                                            Add house
                                         </Link>
                                     </div>
                                 </div>

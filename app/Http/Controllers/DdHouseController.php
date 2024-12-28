@@ -40,15 +40,6 @@ class DdHouseController extends Controller
             'searchTerm' => $request->search,
             'status' => session('msg'),
         ]);
-//        return inertia('DdHouse/Index', [
-//            'ddHouses' => DdHouseResource::collection($q->search($request->search)
-//                ->latest()
-//                ->paginate(5)
-//                ->withQueryString()),
-//
-//            'searchTerm' => $request->search,
-//            'status' => session('msg'),
-//        ]);
     }
 
     /**
@@ -65,7 +56,7 @@ class DdHouseController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $attributes = $request->validate([
-            'code'              => ['required'],
+            'code'              => ['required','unique:dd_houses,code'],
             'name'              => ['required','string'],
             'cluster'           => ['nullable','string'],
             'region'            => ['nullable','string'],
@@ -83,10 +74,10 @@ class DdHouseController extends Controller
 
         if (DdHouse::create($attributes))
         {
-            return to_route('ddHouse.index')->with('msg', 'New dd house created successfully.');
+            return to_route('house.index')->with('msg', 'New dd house created successfully.');
         }
 
-        return to_route('ddHouse.index')->with('msg', 'DD House not created.');
+        return to_route('house.index')->with('msg', 'DD House not created.');
     }
 
     /**
@@ -107,29 +98,29 @@ class DdHouseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DdHouse $ddHouse): Response|ResponseFactory
+    public function edit(DdHouse $house): Response|ResponseFactory
     {
-        return inertia('DdHouse/Edit', ['ddHouse' => $ddHouse]);
+        return inertia('DdHouse/Edit', ['house' => $house]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DdHouse $ddHouse): RedirectResponse
+    public function update(Request $request, DdHouse $house): RedirectResponse
     {
         $attributes = $request->validate([
-            'code'              => ['required'],
+            'code'              => ['required','unique:dd_houses,code'.$house->id],
             'name'              => ['required','string'],
             'cluster'           => ['nullable','string'],
             'region'            => ['nullable','string'],
             'district'          => ['nullable','string'],
             'thana'             => ['nullable','string'],
-            'email'             => ['nullable','email','lowercase','max:255','unique:dd_houses,email'.$ddHouse->id],
+            'email'             => ['nullable','email','lowercase','max:255','unique:dd_houses,email'.$house->id],
             'address'           => ['nullable'],
             'proprietor_name'   => ['nullable','string'],
-            'contact_number'    => ['nullable','numeric','digits:11','unique:dd_houses,contact_number'.$ddHouse->id],
+            'contact_number'    => ['nullable','numeric','digits:11','unique:dd_houses,contact_number'.$house->id],
             'poc_name'          => ['nullable','string'],
-            'poc_number'        => ['nullable','numeric','digits:11','unique:dd_houses,poc_number'.$ddHouse->id],
+            'poc_number'        => ['nullable','numeric','digits:11','unique:dd_houses,poc_number'.$house->id],
             'lifting_date'      => ['nullable','date'],
             'remarks'           => ['nullable'],
             'disabled_at'       => ['nullable'],
@@ -145,12 +136,12 @@ class DdHouseController extends Controller
             $attributes['status'] = 1;
         }
 
-        if ($ddHouse->update($attributes))
+        if ($house->update($attributes))
         {
-            return to_route('ddHouse.index')->with('msg', 'Information updated successfully.');
+            return to_route('house.index')->with('msg', 'Information updated successfully.');
         }
 
-        return to_route('ddHouse.index')->with('msg', 'Information not updated.');
+        return to_route('house.index')->with('msg', 'Information not updated.');
     }
 
     /**
@@ -160,6 +151,6 @@ class DdHouseController extends Controller
     {
         $ddHouse->delete();
 
-        return to_route('ddHouse.index')->with('msg', 'DD house deleted successfully.');
+        return to_route('house.index')->with('msg', 'DD house deleted successfully.');
     }
 }
