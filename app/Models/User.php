@@ -16,6 +16,7 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * @method static create(array $array)
  * @method static where(string $string, string $slug)
+ * @method static updateOrCreate(array|string[] $array, array $array1)
  */
 class User extends Authenticatable
 {

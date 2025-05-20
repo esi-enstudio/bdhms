@@ -6,11 +6,27 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Step 1: Create roles
+        $roles = [
+            'super_admin',
+            'manager',
+            'supervisor',
+            'rso',
+            'bp',
+            'accountant',
+        ];
+
+        foreach ($roles as $roleName) {
+            Role::firstOrCreate(['name' => $roleName]);
+        }
+
+        // Step 2: Define users
         $users = [
             ['Emil Sadekin Islam', '01732547755', 'sadekinislam6@gmail.com', '3213'],
             ['MD. ALI HOSSAIN', '1711000001', 'rso01@gmail.com', 'password'],
@@ -43,20 +59,35 @@ class UserSeeder extends Seeder
             ['Mobashir Ahmed', '1923909897', 'supervisor03@gmail.com', 'password'],
         ];
 
+        // Step 3: Create users and assign roles
         foreach ($users as [$name, $phone, $email, $password]) {
-            User::create([
-                'slug' => Str::random(10),
-                'avatar' => null,
-                'name' => $name,
-                'phone_number' => $phone,
-                'email' => $email,
-                'email_verified_at' => now(),
-                'password' => Hash::make($password),
-                'status' => 'active',
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $user = User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'slug' => Str::random(10),
+                    'avatar' => null,
+                    'name' => $name,
+                    'phone_number' => $phone,
+                    'email_verified_at' => now(),
+                    'password' => Hash::make($password),
+                    'status' => 'active',
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+
+            // Role assignment logic
+            if ($email === 'sadekinislam6@gmail.com') {
+                $user->assignRole('super_admin');
+            } elseif (str_starts_with($email, 'rso')) {
+                $user->assignRole('rso');
+            } elseif (str_starts_with($email, 'supervisor')) {
+                $user->assignRole('supervisor');
+            } else {
+                // Optionally assign a default role like 'manager' or leave empty
+                $user->assignRole('manager');
+            }
         }
     }
 }
