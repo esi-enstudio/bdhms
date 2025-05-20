@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use App\Models\House;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -39,7 +40,20 @@ class HousesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()
+                    ->form([
+                        Forms\Components\Select::make('recordId')
+                            ->label('Select House')
+                            ->options(
+                                House::where('status','active')->get()
+                                    ->mapWithKeys(fn ($house) => [
+                                        $house->id => "{$house->code} - {$house->name}"
+                                    ])
+                            )
+                            ->preload()
+                            ->searchable()
+                            ->required(),
+                    ])
             ])
             ->actions([
                 Tables\Actions\DetachAction::make(),

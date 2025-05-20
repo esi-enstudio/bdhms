@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 /**
  * @method static pluck(string $string, string $string1)
@@ -12,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class House extends Model
 {
+    use HasSlug;
+
     protected $fillable = [
         'code',
         'slug',
@@ -31,7 +36,21 @@ class House extends Model
         'remarks',
     ];
 
-    protected $with = ['users'];
+    /**
+     * @return SlugOptions
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(function () {
+                do {
+                    $slug = Str::random(10);
+                } while (self::where('slug', $slug)->exists());
+                return $slug;
+            })
+            ->saveSlugsTo('slug') // Column to save slug
+            ->doNotGenerateSlugsOnUpdate();
+    }
 
     public function getRouteKeyName(): string
     {
@@ -42,6 +61,7 @@ class House extends Model
     {
         return $this->belongsToMany(User::class)->withTimestamps();
     }
+
 }
 
 

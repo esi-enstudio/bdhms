@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\House;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -89,5 +90,15 @@ class UserSeeder extends Seeder
                 $user->assignRole('manager');
             }
         }
+
+        // Attach all houses to the super admin user
+//        $superAdmin = User::where('email', 'sadekinislam6@gmail.com')->first();
+//
+//        if ($superAdmin) {
+//            $houses = House::where('status', 'active')->get();
+//
+//            // Adjust depending on your actual relationship: belongsToMany or hasMany
+//            $superAdmin->houses()->syncWithoutDetaching($houses->pluck('id'));
+//        }
     }
 }

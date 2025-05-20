@@ -23,13 +23,6 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasSlug;
 
-    protected $with = ['houses'];
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug'; // Use slug instead of id in routes
-    }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -87,5 +80,10 @@ class User extends Authenticatable
             })
             ->saveSlugsTo('slug') // Column to save slug
             ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug'; // Use slug instead of id in routes
     }
 }

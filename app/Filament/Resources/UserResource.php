@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\HousesRelationManager;
 use App\Models\House;
 use App\Models\User;
+use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -88,7 +89,7 @@ class UserResource extends Resource
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function table(Table $table): Table
     {
@@ -112,38 +113,31 @@ class UserResource extends Resource
             ])
             ->defaultPaginationPageOption(5)
             ->filters([
-                SelectFilter::make('house_id')
+                SelectFilter::make('house')
                     ->label('DD House')
-//                    ->options(House::where('status','active')->pluck('code','id')),
-                    ->options(function (){
-
-                    }),
-
-                SelectFilter::make('role')
-                    ->options(function () {
-                        // লগইন করা ইউজারের হাউজগুলো পাওয়া
-                        $userHouses = auth()->user()->houses()->pluck('houses.id')->toArray();
-
-                        // ইউজারের হাউজের সাথে সম্পর্কিত অন্যান্য ইউজারদের ভূমিকা পাওয়া
-                        return Role::query()
-                            ->whereHas('users', function ($query) use ($userHouses) {
-                                $query->whereHas('houses', function ($q) use ($userHouses) {
-                                    $q->whereIn('houses.id', $userHouses);
-                                });
-                            })
-                            ->pluck('name')
-                            ->mapWithKeys(function ($role) {
-                                // ভূমিকার নাম টাইটেল কেসে ফরম্যাট করা
-                                return [$role => Str::title($role)];
-                            })
-                            ->toArray();
-                    })
+                    ->options(
+                        House::where('status', 'active')
+                            ->pluck('code', 'id')
+                    )
                     ->query(function ($query, array $data) {
                         if (!empty($data['value'])) {
-                            // লগইন করা ইউজারের হাউজগুলো
+                            $query->whereHas('houses', function ($q) use ($data) {
+                                $q->where('houses.id', $data['value']);
+                            });
+                        }
+                    }),
+
+
+                SelectFilter::make('role')
+                    ->options(
+                        Role::pluck('name')
+                            ->mapWithKeys(fn($role) => [$role => Str::title($role)])
+                            ->toArray()
+                    )
+                    ->query(function ($query, array $data) {
+                        if (!empty($data['value'])) {
                             $userHouses = auth()->user()->houses()->pluck('houses.id')->toArray();
 
-                            // নির্বাচিত ভূমিকা এবং হাউজের সাথে সম্পর্কিত ইউজার ফিল্টার করা
                             $query->whereHas('roles', function ($q) use ($data) {
                                 $q->where('name', $data['value']);
                             })->whereHas('houses', function ($q) use ($userHouses) {
@@ -151,6 +145,7 @@ class UserResource extends Resource
                             });
                         }
                     }),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
