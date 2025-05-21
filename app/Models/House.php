@@ -12,6 +12,7 @@ use Spatie\Sluggable\SlugOptions;
  * @method static pluck(string $string, string $string1)
  * @method static find($id)
  * @method static where(string $string, string $string1)
+ * @method static insert(array[] $array)
  */
 class House extends Model
 {
