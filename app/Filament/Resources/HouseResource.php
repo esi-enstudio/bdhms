@@ -22,7 +22,7 @@ class HouseResource extends Resource
 {
     protected static ?string $model = House::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-home-modern';
 
     public static function form(Form $form): Form
     {
@@ -62,21 +62,21 @@ class HouseResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->searchable(['name','code'])
-                    ->description(fn($record): string => $record->code),
+                    ->description(fn($record): string => $record->code ?? ''),
                 TextColumn::make('region')
                     ->searchable(['region','cluster'])
-                    ->description(fn($record): string => $record->cluster),
+                    ->description(fn($record): string => $record->cluster ?? ''),
                 TextColumn::make('thana')
-                    ->description(fn($record): string => $record->district)
+                    ->description(fn($record): string => $record->district ?? '')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('email'),
                 TextColumn::make('address')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('proprietor_name')
-                    ->description(fn($record): string => $record->contact_number)
+                    ->description(fn($record): string => $record->contact_number ?? '')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('poc_name')
-                    ->description(fn($record): string => $record->poc_number)
+                    ->description(fn($record): string => $record->poc_number ?? '')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('lifting_date')
                     ->dateTime()

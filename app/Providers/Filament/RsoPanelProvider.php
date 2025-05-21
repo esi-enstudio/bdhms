@@ -30,6 +30,7 @@ class RsoPanelProvider extends PanelProvider
             ->id('rso')
             ->path('rso')
             ->login()
+            ->passwordReset()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -56,6 +57,7 @@ class RsoPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->spa();
     }
 }
